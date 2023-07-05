@@ -56,7 +56,8 @@ ContactInfo <${ContactInfo}> @ator: ${Wallet}
 
 # Pick a nickname that you like for your bridge.  This is optional.
 Nickname ${Nickname}
-EOL   # Add RunAsDaemon 1 ???
+
+EOL   
 
 # enable and restart the service
 printf "\n${purple}[~] Enabling & Starting the Service ...${clear}\n"
@@ -65,3 +66,5 @@ systemctl restart tor.service
 
 printf "\n${green}[*] Finished! ${clear}\n\n"
 printf "\n${red}[!] Do not forget to open your chosen ORPort in your router settings!${clear}\n"
+
+exit
