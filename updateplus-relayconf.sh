@@ -87,6 +87,20 @@ apt install tor deb.torproject.org-keyring -y
 # Package installation
 
 ######################################################################################
+# This is the first prompt asking the user if theyd like to set up a Bridge or a Relay
+# ####################################################################################
+
+printf "\n${blue}[?] Would you like to set up a Middle/Guard Relay? Press n to create a Bridge instead. [Y/n] : ${clear}"
+read Option1
+if [[ ${Option1} == "Y" || ${Option1} == "y" ]] ; then
+    printf "\n${blue}[~] Lets setup your Middle/Guard Relay ...${clear}\n"
+else
+    printf "\n${blue}[~] Lets setup your Bridge Relay ...${clear}\n"
+    wget -q https://raw.githubusercontent.com/ubokim/update-plus-config/main/bridge-option.sh ; chmod +x bridge-option.sh ; sudo ./bridge-option.sh
+    exit #exits post bridge inst and doesnt execute the script for middle/guard relay
+fi
+
+######################################################################################
 # Tor config file setup
 # ####################################################################################
 
