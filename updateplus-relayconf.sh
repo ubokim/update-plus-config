@@ -6,8 +6,8 @@
 
 # define colors
 clear='\033[0m'
-blue='\033[1;34m'
-purple='\033[1;35m'
+blue='\033[1;96m'
+yellow='\033[1;93m'
 green='\033[0;32m'
 red='\033[0;31m'
 
@@ -16,12 +16,14 @@ red='\033[0;31m'
 # Required System Updates + Upgrades
 #####################################
 
+                                       
+
 # Public Key not signed on Rock 4c out of the box
 printf "${blue}\n[~] Update Public Key ...${clear}\n"
 wget -O - apt.radxa.com/focal-stable/public.key | sudo apt-key add -
 
 # System Update + Upgrade (Takes a few mins)
-printf "${blue}\n[~] Updating packages ...${clear}\n"
+printf "${yellow}\n[~] Updating packages ...${clear}\n"
 apt update -y
 
 printf "${blue}\n[~] Upgrading packages ...${clear}\n"
@@ -32,7 +34,7 @@ apt upgrade -y
 # https://community.torproject.org/relay/setup/guard/debian-ubuntu/updates/
 ###########################################################################
 
-printf "\n${purple}[~] Enabling automatic software updates ...${clear}\n"
+printf "\n${yellow}[~] Enabling automatic software updates ...${clear}\n"
 
 # Removes existing files in the repo and replaces them
 echo "" > /etc/apt/apt.conf.d/50unattended-upgrades
@@ -66,7 +68,7 @@ printf "\n${blue}[~] Configuring Tor Project's repository ...${clear}\n"
 apt install apt-transport-https -y
 
 # create tor.list file
-printf "\n${blue}[~] Creating the tor.list file ...${clear}\n"
+printf "\n${yellow}[~] Creating the tor.list file ...${clear}\n"
 touch /etc/apt/sources.list.d/tor.list
 
 printf "${blue}[~] Writing to the tor.list file ...${clear}\n"
@@ -80,37 +82,24 @@ wget -qO- https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8C
 
 
 # keyring install
-printf "\n${purple}[~] Installing keyring ...${clear}\n"
+printf "\n${yellow}[~] Installing keyring ...${clear}\n"
 apt update
 apt install tor deb.torproject.org-keyring -y
 
 # Package installation
 
 ######################################################################################
-# This is the first prompt asking the user if theyd like to set up a Bridge or a Relay
-# ####################################################################################
-
-printf "\n${blue}[?] Would you like to set up a Middle/Guard Relay? Press n to create a Bridge instead. [Y/n] : ${clear}"
-read Option1
-if [[ ${Option1} == "Y" || ${Option1} == "y" ]] ; then
-    printf "\n${blue}[~] Lets setup your Middle/Guard Relay ...${clear}\n"
-else
-    printf "\n${blue}[~] Lets setup your Bridge Relay ...${clear}\n"
-    wget -q https://raw.githubusercontent.com/ubokim/update-plus-config/main/bridge-option.sh ; chmod +x bridge-option.sh ; sudo ./bridge-option.sh
-    exit #exits post bridge inst and doesnt execute the script for middle/guard relay
-fi
-
-######################################################################################
 # Tor config file setup
 # ####################################################################################
 
-printf "${purple}\n[+] Configuration for torrc file${clear}\n"
+
+printf "${blue}\n[+] Configuration for torrc file${clear}\n"
 read -p "Nickname : " Nickname
 read -p "Email : " ContactInfo
 read -p "ORPort : " ORPort
 read -p "ETH Wallet Address : " Wallet
 
-printf "\n${blue}[?] Would you like to configure bandwidth limits for your relay traffic? [Y/n] : ${clear}"
+printf "\n${yellow}[?] Would you like to configure bandwidth limits for your relay traffic? [Y/n] : ${clear}"
 read Option2
 if [[ ${Option2} == "Y" || ${Option2} == "y" ]] ; then
     read -p "Relay Bandwidth Rate (KB/s) : " RelayBandwidthRateSet
@@ -122,7 +111,7 @@ else
     RelayBandwidthBurst="#RelayBandwidthBurst 200KB"
 fi
 
-printf "\n${purple}[?] Would you like to add limits for your relay traffic? [Y/n] : ${clear}"
+printf "\n${blue}[?] Would you like to add limits for your relay traffic? [Y/n] : ${clear}"
 read Option3
 if [[ ${Option3} == "Y" || ${Option3} == "y" ]] ; then
     read -p "Accounting Max : " AccountingMaxSet
@@ -136,7 +125,7 @@ fi
 
 # Torrc file config 
 # ** maybe put full config file just in case? 
-printf "\n${blue}[~] Configuring torrc file ...${clear}\n"
+printf "\n${yellow}[~] Configuring torrc file ...${clear}\n"
 cat > /etc/tor/torrc << EOL
 ## Configuration file for a middle/guard Tor relay 
 ## See 'man tor', or https://www.torproject.org/docs/tor-manual.html,
@@ -207,7 +196,7 @@ ExitRelay   0
 EOL
 
 # restart the service
-printf "\n${purple}[~] Restarting onion router service ...${clear}\n"
+printf "\n${blue}[~] Restarting onion router service ...${clear}\n"
 systemctl restart tor@default
 
 printf "\n${green}[*] Finished! ${clear}\n\n"
@@ -215,7 +204,7 @@ printf "\n${red}[!] Do not forget to open your chosen ORPort in your router sett
 
 
 # reboot system for previos changes to take effect
-printf "\n${red}[!] Rebooting System, Don't Exit! ...${clear}\n"
+printf "\n${red}[!] Rebooting System! ...${clear}\n"
 sudo reboot
 
 # NOT SURE IF REBOOT IS NECCESARY YET, NEED TO TEST AND SEE IF IT CAN BE AVOIDED 
